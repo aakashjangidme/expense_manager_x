@@ -28,34 +28,56 @@ class TransactionListBuilder extends ConsumerWidget {
           TransactionInfo txnInfo = item[index];
           bool isDebit = txnInfo.txnType == TxnType.debit;
 
-          return ListTile(
-            onTap: () => _showUpdateTransactionOverlay(context, txnInfo, ref),
-            onLongPress: () {
-              log(txnInfo.txnBody);
+          print(txnInfo.transactionSource.trim().isNotEmpty);
+          print(txnInfo.transactionSource.length);
+
+          return Dismissible(
+            background: Container(color: Colors.redAccent),
+            key: ValueKey(txnInfo.key),
+            onDismissed: (direction) async {
+              item.removeWhere((element) => element.id == txnInfo.id);
+              await ref
+                  .read(debitTransactionsProvider.notifier)
+                  .markTransactionAsDismissed(txnInfo);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${txnInfo.transactionTitle} dismissed'),
+                  ),
+                );
+              }
             },
-            leading: const Icon(
-              Icons.shopping_bag_outlined,
-              color: Colors.lightGreenAccent,
-            ),
-            subtitle: Wrap(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(txnInfo.transactionSource,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(width: 8.0),
-                Text(txnInfo.getFormattedDate)
-              ],
-            ),
-            title: Row(
-              children: [Text(txnInfo.transactionTitle)],
-            ),
-            trailing: Text(
-              ('\u{20B9}') +
-                  (isDebit ? ' -' : ' +') +
-                  (txnInfo.transactionAmount.toStringAsFixed(2)),
-              style: TextStyle(color: isDebit ? Colors.red : Colors.green),
+            child: ListTile(
+              iconColor: Colors.greenAccent,
+              onTap: () => _showUpdateTransactionOverlay(context, txnInfo, ref),
+              onLongPress: () {
+                log(txnInfo.txnBody);
+              },
+              leading: const Icon(
+                Icons.shopping_bag_outlined,
+              ),
+              subtitle: Wrap(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (txnInfo.transactionSource.trim().isNotEmpty) ...[
+                    Text(txnInfo.transactionSource,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(width: 8.0),
+                  ],
+                  Text(txnInfo.getFormattedDate)
+                ],
+              ),
+              title: Row(
+                children: [Text(txnInfo.transactionTitle)],
+              ),
+              trailing: Text(
+                ('\u{20B9}') +
+                    (isDebit ? ' -' : ' +') +
+                    (txnInfo.transactionAmount.toStringAsFixed(2)),
+                style: TextStyle(color: isDebit ? Colors.red : Colors.green),
+              ),
             ),
           );
         },

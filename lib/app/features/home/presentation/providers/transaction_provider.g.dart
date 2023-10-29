@@ -6,7 +6,7 @@ part of 'transaction_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$totalDebitsHash() => r'50038e1f54df19cd318fe1170639a0f3d876a20f';
+String _$totalDebitsHash() => r'31df0403dd03c81893aebdafeb2a03e4f2aab68b';
 
 /// See also [totalDebits].
 @ProviderFor(totalDebits)
@@ -52,7 +52,7 @@ final sMSPermissionStatusProvider =
 
 typedef _$SMSPermissionStatus = AutoDisposeNotifier<PermissionStatus>;
 String _$filteredTransactionsHash() =>
-    r'500956ac1a62b43ee366b4e9ffb4cf87f17549d9';
+    r'e87e154c3aa4a2ccdcabcc717146d14f5f3a19d1';
 
 /// See also [FilteredTransactions].
 @ProviderFor(FilteredTransactions)
@@ -85,7 +85,7 @@ final selectedMonthProvider =
 );
 
 typedef _$SelectedMonth = AutoDisposeNotifier<String>;
-String _$debitTransactionsHash() => r'9431b894b9e377542643468d244f192786662162';
+String _$debitTransactionsHash() => r'6ae38fcd4a774bd8f16a1e792e87075b26a6a198';
 
 /// See also [DebitTransactions].
 @ProviderFor(DebitTransactions)

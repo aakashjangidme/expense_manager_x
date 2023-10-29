@@ -32,6 +32,8 @@ mixin _$Transaction {
   String? get transactionCategory => throw _privateConstructorUsedError;
   @HiveField(7)
   String? get txnBody => throw _privateConstructorUsedError;
+  @HiveField(8)
+  bool? get isDismissed => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TransactionCopyWith<Transaction> get copyWith =>
@@ -52,7 +54,8 @@ abstract class $TransactionCopyWith<$Res> {
       @HiveField(4) DateTime? transactionDate,
       @HiveField(5) double? transactionAmount,
       @HiveField(6) String? transactionCategory,
-      @HiveField(7) String? txnBody});
+      @HiveField(7) String? txnBody,
+      @HiveField(8) bool? isDismissed});
 }
 
 /// @nodoc
@@ -76,6 +79,7 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
     Object? transactionAmount = freezed,
     Object? transactionCategory = freezed,
     Object? txnBody = freezed,
+    Object? isDismissed = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -110,6 +114,10 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
           ? _value.txnBody
           : txnBody // ignore: cast_nullable_to_non_nullable
               as String?,
+      isDismissed: freezed == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -130,7 +138,8 @@ abstract class _$$TransactionImplCopyWith<$Res>
       @HiveField(4) DateTime? transactionDate,
       @HiveField(5) double? transactionAmount,
       @HiveField(6) String? transactionCategory,
-      @HiveField(7) String? txnBody});
+      @HiveField(7) String? txnBody,
+      @HiveField(8) bool? isDismissed});
 }
 
 /// @nodoc
@@ -152,6 +161,7 @@ class __$$TransactionImplCopyWithImpl<$Res>
     Object? transactionAmount = freezed,
     Object? transactionCategory = freezed,
     Object? txnBody = freezed,
+    Object? isDismissed = freezed,
   }) {
     return _then(_$TransactionImpl(
       id: freezed == id
@@ -186,6 +196,10 @@ class __$$TransactionImplCopyWithImpl<$Res>
           ? _value.txnBody
           : txnBody // ignore: cast_nullable_to_non_nullable
               as String?,
+      isDismissed: freezed == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -202,7 +216,8 @@ class _$TransactionImpl extends _Transaction {
       @HiveField(4) required this.transactionDate,
       @HiveField(5) required this.transactionAmount,
       @HiveField(6) required this.transactionCategory,
-      @HiveField(7) required this.txnBody})
+      @HiveField(7) required this.txnBody,
+      @HiveField(8) this.isDismissed = false})
       : super._();
 
   @override
@@ -229,10 +244,14 @@ class _$TransactionImpl extends _Transaction {
   @override
   @HiveField(7)
   final String? txnBody;
+  @override
+  @JsonKey()
+  @HiveField(8)
+  final bool? isDismissed;
 
   @override
   String toString() {
-    return 'Transaction(id: $id, transactionTitle: $transactionTitle, txnType: $txnType, transactionSource: $transactionSource, transactionDate: $transactionDate, transactionAmount: $transactionAmount, transactionCategory: $transactionCategory, txnBody: $txnBody)';
+    return 'Transaction(id: $id, transactionTitle: $transactionTitle, txnType: $txnType, transactionSource: $transactionSource, transactionDate: $transactionDate, transactionAmount: $transactionAmount, transactionCategory: $transactionCategory, txnBody: $txnBody, isDismissed: $isDismissed)';
   }
 
   @override
@@ -252,7 +271,9 @@ class _$TransactionImpl extends _Transaction {
                 other.transactionAmount == transactionAmount) &&
             (identical(other.transactionCategory, transactionCategory) ||
                 other.transactionCategory == transactionCategory) &&
-            (identical(other.txnBody, txnBody) || other.txnBody == txnBody));
+            (identical(other.txnBody, txnBody) || other.txnBody == txnBody) &&
+            (identical(other.isDismissed, isDismissed) ||
+                other.isDismissed == isDismissed));
   }
 
   @override
@@ -265,7 +286,8 @@ class _$TransactionImpl extends _Transaction {
       transactionDate,
       transactionAmount,
       transactionCategory,
-      txnBody);
+      txnBody,
+      isDismissed);
 
   @JsonKey(ignore: true)
   @override
@@ -283,7 +305,8 @@ abstract class _Transaction extends Transaction {
       @HiveField(4) required final DateTime? transactionDate,
       @HiveField(5) required final double? transactionAmount,
       @HiveField(6) required final String? transactionCategory,
-      @HiveField(7) required final String? txnBody}) = _$TransactionImpl;
+      @HiveField(7) required final String? txnBody,
+      @HiveField(8) final bool? isDismissed}) = _$TransactionImpl;
   _Transaction._() : super._();
 
   @override
@@ -310,6 +333,9 @@ abstract class _Transaction extends Transaction {
   @override
   @HiveField(7)
   String? get txnBody;
+  @override
+  @HiveField(8)
+  bool? get isDismissed;
   @override
   @JsonKey(ignore: true)
   _$$TransactionImplCopyWith<_$TransactionImpl> get copyWith =>

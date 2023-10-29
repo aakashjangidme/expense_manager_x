@@ -55,13 +55,17 @@ class FilteredTransactions extends _$FilteredTransactions {
         final transactionDate = transaction.transactionDate;
         final formattedDate =
             DateFormat(defaultMonthFormat, 'en_US').format(transactionDate);
-        return formattedDate == selectedMonth;
+        return (formattedDate == selectedMonth);
       }).toList();
     }
 
     // Sort the filtered transactions by transactionDate
     filteredTransactions
         .sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
+
+    filteredTransactions = filteredTransactions
+        .where((element) => element.isDismissed == false)
+        .toList();
 
     return filteredTransactions;
   }
@@ -103,18 +107,18 @@ class SelectedMonth extends _$SelectedMonth {
 double totalDebits(TotalDebitsRef ref) {
   final filteredTransactions = ref.watch(filteredTransactionsProvider);
 
-  if (filteredTransactions.hasValue && filteredTransactions.asData != null) {
-    final filteredData = filteredTransactions.asData;
-
-    if (filteredData != null && filteredData.value.isNotEmpty) {
-      return filteredData.value
-          .where((transaction) => transaction.txnType == TxnType.debit)
-          .map((transaction) => transaction.transactionAmount)
-          .fold(0.0, (total, amount) => total + amount);
-    }
+  if (!filteredTransactions.hasValue) {
+    return filteredTransactions.valueOrNull
+            ?.where((transaction) => transaction.txnType == TxnType.debit)
+            .map((transaction) => transaction.transactionAmount)
+            .fold(0.0, (total, amount) => total! + amount) ??
+        0.0;
   }
 
-  return 0.0;
+  return filteredTransactions.valueOrNull!
+      .where((transaction) => transaction.txnType == TxnType.debit)
+      .map((transaction) => transaction.transactionAmount)
+      .fold(0.0, (total, amount) => total + amount);
 }
 
 // Provider for unique months
@@ -126,7 +130,6 @@ List<String> uniqueMonths(UniqueMonthsRef ref) {
     final uniqueMonthsSet = <String>{};
 
     for (final txn in txnList.value!) {
-      //TODO: come back here and see the usage of smsMessages.asData!.value
       final transactionDate = txn.transactionDate;
       final monthYearString =
           DateFormat(defaultMonthFormat, 'en_US').format(transactionDate);
@@ -146,10 +149,8 @@ class DebitTransactions extends _$DebitTransactions {
   List<TransactionInfo> build() {
     final txnList = ref.watch(transactionListFromSMSIsolateProvider);
 
-    log('debitTransactions::txnList.hasValue ${txnList.hasValue}');
-
     if (!txnList.hasValue) {
-      return [];
+      return txnList.valueOrNull ?? [];
     }
 
     return txnList.valueOrNull!
@@ -161,6 +162,32 @@ class DebitTransactions extends _$DebitTransactions {
     final txnRepo = ref.watch(transactionRepositoryProvider);
 
     await txnRepo.insertTransaction(info);
+
+    final txnList = await txnRepo.getAllTransactions();
+
+    state =
+        txnList.where((element) => element.txnType == TxnType.debit).toList();
+  }
+
+  Future<void> deleteTransaction(TransactionInfo info) async {
+    final txnRepo = ref.watch(transactionRepositoryProvider);
+
+    await txnRepo.deleteTransaction(info);
+
+    final txnList = await txnRepo.getAllTransactions();
+
+    state = txnList
+        .where((element) =>
+            element.txnType == TxnType.debit && element.isDismissed == false)
+        .toList();
+  }
+
+  Future<void> markTransactionAsDismissed(TransactionInfo info) async {
+    final txnRepo = ref.watch(transactionRepositoryProvider);
+
+    final txn = info.copyWith(isDismissed: true);
+
+    await txnRepo.updateTransaction(txn);
 
     final txnList = await txnRepo.getAllTransactions();
 

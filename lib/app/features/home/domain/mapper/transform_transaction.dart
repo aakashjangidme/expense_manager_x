@@ -1,10 +1,8 @@
-
-
 import '../../../../core/configs/constants.dart';
 import '../../data/datasources/local/hive/transaction.dart';
 import '../models/transaction_info.dart';
 
-TransactionInfo mapTransactionEntityToModel(Transaction entity) {
+TransactionInfo transformToTransactionInfo(Transaction entity) {
   return TransactionInfo(
     id: entity.id ?? 0,
     // Provide a default value for null id
@@ -18,10 +16,12 @@ TransactionInfo mapTransactionEntityToModel(Transaction entity) {
     // Provide a default value for null amount
     transactionCategory: entity.transactionCategory ?? "",
     txnBody: entity.txnBody ?? "",
+    key: entity.key,
+    isDismissed: entity.isDismissed,
   );
 }
 
-Transaction mapTransactionModelToEntity(TransactionInfo model) {
+Transaction transformToTransactionObject(TransactionInfo model) {
   return Transaction(
     id: model.id ?? 0,
     // Provide a default value for null id
@@ -35,5 +35,6 @@ Transaction mapTransactionModelToEntity(TransactionInfo model) {
     // Provide a default value for null amount
     transactionCategory: model.transactionCategory ?? "",
     txnBody: model.txnBody ?? "",
+    isDismissed: model.isDismissed,
   );
 }

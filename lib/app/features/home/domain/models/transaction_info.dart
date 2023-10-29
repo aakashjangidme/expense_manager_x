@@ -4,13 +4,14 @@ import '../../../../core/configs/constants.dart';
 import '../../utils/index.dart';
 
 part 'transaction_info.freezed.dart';
+
 part 'transaction_info.g.dart';
 
 @freezed
 class TransactionInfo with _$TransactionInfo {
   const TransactionInfo._();
 
-  const factory TransactionInfo({
+  factory TransactionInfo({
     required int id,
     required String transactionTitle,
     required TxnType txnType,
@@ -19,6 +20,8 @@ class TransactionInfo with _$TransactionInfo {
     required double transactionAmount,
     required String transactionCategory,
     required String txnBody,
+    required dynamic key,
+    @Default(false) bool? isDismissed,
   }) = _TransactionInfo;
 
   /*
