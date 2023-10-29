@@ -6,30 +6,30 @@ part of 'transaction.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionAdapter extends TypeAdapter<Transaction> {
+class TransactionImplAdapter extends TypeAdapter<_$TransactionImpl> {
   @override
   final int typeId = 0;
 
   @override
-  Transaction read(BinaryReader reader) {
+  _$TransactionImpl read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Transaction(
+    return _$TransactionImpl(
       id: fields[0] as int?,
       transactionTitle: fields[1] as String?,
-      transactionCategory: fields[6] as String?,
       txnType: fields[2] as TxnType?,
       transactionSource: fields[3] as String?,
       transactionDate: fields[4] as DateTime?,
       transactionAmount: fields[5] as double?,
+      transactionCategory: fields[6] as String?,
       txnBody: fields[7] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Transaction obj) {
+  void write(BinaryWriter writer, _$TransactionImpl obj) {
     writer
       ..writeByte(8)
       ..writeByte(0)
@@ -56,7 +56,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionAdapter &&
+      other is TransactionImplAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

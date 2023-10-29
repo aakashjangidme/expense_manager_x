@@ -24,7 +24,7 @@ final transactionAdapterProvider =
 
 typedef TransactionAdapterRef = AutoDisposeProviderRef<Box<Transaction>>;
 String _$transactionRepositoryHash() =>
-    r'81a9a4d752ef815bb0742e103fea5ecd8618cfcd';
+    r'71fd693ae860639d145486f888eca14ed8f95b47';
 
 /// See also [transactionRepository].
 @ProviderFor(transactionRepository)

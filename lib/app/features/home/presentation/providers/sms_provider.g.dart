@@ -7,7 +7,7 @@ part of 'sms_provider.dart';
 // **************************************************************************
 
 String _$transactionListFromSMSIsolateHash() =>
-    r'183fd68a0e4018fe04f70d5ceae2a5ed28f6f7ff';
+    r'49fcb252472f7c5e9b791bd9a85dab7caadb1cf9';
 
 /// See also [transactionListFromSMSIsolate].
 @ProviderFor(transactionListFromSMSIsolate)
