@@ -1,4 +1,3 @@
-
 import 'package:sms_advanced/sms_advanced.dart';
 
 import '../../../core/configs/constants.dart';
@@ -36,6 +35,8 @@ TransactionInfo extractTransactionalInfo(SmsMessage message) {
     transactionAmount: transactionAmount,
     transactionCategory: transactionCategory,
     txnBody: smsBody,
+    key: null,
+    isDismissed: false,
   );
 }
 

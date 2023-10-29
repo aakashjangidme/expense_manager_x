@@ -21,5 +21,6 @@ abstract class Transaction extends HiveObject with _$Transaction {
     @HiveField(5) required double? transactionAmount,
     @HiveField(6) required String? transactionCategory,
     @HiveField(7) required String? txnBody,
+    @Default(false) @HiveField(8) bool? isDismissed,
   }) = _Transaction;
 }

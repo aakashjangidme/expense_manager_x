@@ -17,6 +17,8 @@ _$TransactionInfoImpl _$$TransactionInfoImplFromJson(
       transactionAmount: (json['transactionAmount'] as num).toDouble(),
       transactionCategory: json['transactionCategory'] as String,
       txnBody: json['txnBody'] as String,
+      key: json['key'],
+      isDismissed: json['isDismissed'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$TransactionInfoImplToJson(
@@ -30,6 +32,8 @@ Map<String, dynamic> _$$TransactionInfoImplToJson(
       'transactionAmount': instance.transactionAmount,
       'transactionCategory': instance.transactionCategory,
       'txnBody': instance.txnBody,
+      'key': instance.key,
+      'isDismissed': instance.isDismissed,
     };
 
 const _$TxnTypeEnumMap = {

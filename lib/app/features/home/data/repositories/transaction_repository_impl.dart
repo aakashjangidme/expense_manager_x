@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:expense_manager_x/app/features/home/domain/repositories/transaction_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../domain/mapper/txn_entity_to_model.dart';
+import '../../domain/mapper/transform_transaction.dart';
 import '../../domain/models/transaction_info.dart';
 import '../datasources/local/hive/transaction.dart';
 
@@ -18,13 +19,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
     try {
       final transactionEntities = _box.values.toList();
       final transactionInfoList =
-          transactionEntities.map(mapTransactionEntityToModel).toList();
+          transactionEntities.map(transformToTransactionInfo).toList();
 
       return transactionInfoList;
     } catch (e) {
       log('TransactionRepositoryImpl::getAllTransactions', error: e);
-      // Handle any exceptions, such as HiveException or others, appropriately
-      // Logging the error or returning a default value may be considered
       rethrow; // Rethrow the exception for better error handling further up the call stack
     }
   }
@@ -34,28 +33,29 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<void> insertAllTransactions(List<TransactionInfo> txnInfoList) async {
     try {
       final transactionList =
-          txnInfoList.map(mapTransactionModelToEntity).toList();
+          txnInfoList.map(transformToTransactionObject).toList();
       await _box.addAll(transactionList);
     } catch (e) {
       log('TransactionRepositoryImpl::insertAllTransactions', error: e);
 
-      // Handle any exceptions, such as HiveException or others, appropriately
-      // Logging the error or returning a default value may be considered
       rethrow; // Rethrow the exception for better error handling further up the call stack
     }
   }
 
   // Update a transaction in the database
   @override
-  Future<void> updateTransaction(TransactionInfo updatedTransaction) async {
+  Future<void> updateTransaction(TransactionInfo transactionInfo) async {
     try {
-      if (updatedTransaction.id == null) {
-        // Handle cases where the ID is missing
-        throw ArgumentError('Transaction must have a valid ID.');
-      }
+      log('TransactionRepositoryImpl::updateTransaction.transactionInfo - \n${transactionInfo.toString()}');
 
-      final updatedEntity = mapTransactionModelToEntity(updatedTransaction);
-      await _box.putAt(updatedTransaction.id, updatedEntity);
+      if (_box.containsKey(transactionInfo.key)) {
+        final updatedEntity = transformToTransactionObject(transactionInfo);
+        await _box.put(transactionInfo.key, updatedEntity);
+      } else {
+        final message =
+            "TransactionRepositoryImpl::updateTransaction - The key ${transactionInfo.key} does not exists.";
+        throw AsyncValue.error(message, StackTrace.current);
+      }
     } catch (e) {
       log('TransactionRepositoryImpl::updateTransaction', error: e);
 
@@ -67,39 +67,44 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   // Insert a single transaction into the database
   @override
-  Future<void> insertTransaction(TransactionInfo newTransactionInfo) async {
+  Future<void> insertTransaction(TransactionInfo transactionInfo) async {
     try {
-      log('entered TransactionRepositoryImpl::insertTransaction');
+      log('TransactionRepositoryImpl::insertTransaction.transactionInfo - \n${transactionInfo.toString()}');
 
-      final existingTxn = _box.get(newTransactionInfo.id);
+      final existingTransaction =
+          _box.values.any((element) => element.id == transactionInfo.id);
 
-      log('entered TransactionRepositoryImpl::existingTxn ${existingTxn.toString()}');
-
-      final newEntity = mapTransactionModelToEntity(newTransactionInfo);
-      await _box.add(newEntity);
-    } catch (e) {
-      log('TransactionRepositoryImpl::insertTransaction', error: e);
-
-      // Handle any exceptions, such as HiveException or others, appropriately
-      // Logging the error or returning a default value may be considered
+      if (!existingTransaction) {
+        final newTransaction = transformToTransactionObject(transactionInfo);
+        await _box.add(newTransaction);
+      } else {
+        final message =
+            "TransactionRepositoryImpl::insertTransaction - The key ${transactionInfo.key} already exists.";
+        throw AsyncValue.error(message, StackTrace.current);
+      }
+    } catch (e, s) {
+      log('TransactionRepositoryImpl::insertTransaction',
+          error: e, stackTrace: s);
       rethrow; // Rethrow the exception for better error handling further up the call stack
     }
   }
 
   // Delete a transaction from the database
   @override
-  Future<void> deleteTransaction(TransactionInfo transactionToDelete) async {
+  Future<void> deleteTransaction(TransactionInfo transactionInfo) async {
     try {
-      if (transactionToDelete.id == null) {
-        // Handle cases where the ID is missing
-        throw ArgumentError('Transaction must have a valid ID.');
+      log('TransactionRepositoryImpl::deleteTransaction.transactionInfo - \n${transactionInfo.toString()}');
+
+      if (_box.containsKey(transactionInfo.key)) {
+        await _box.delete(transactionInfo.key);
+      } else {
+        final message =
+            "TransactionRepositoryImpl::deleteTransaction - The key ${transactionInfo.key} does not exists.";
+        throw AsyncValue.error(message, StackTrace.current);
       }
-      await _box.delete(transactionToDelete.id);
     } catch (e) {
       log('TransactionRepositoryImpl::deleteTransaction', error: e);
 
-      // Handle any exceptions, such as HiveException or others, appropriately
-      // Logging the error or returning a default value may be considered
       rethrow; // Rethrow the exception for better error handling further up the call stack
     }
   }
@@ -107,5 +112,24 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<void> deleteAllTransactions() async {
     await _box.clear();
+  }
+
+  @override
+  TransactionInfo? getTransactionById(TransactionInfo transactionInfo) {
+    Transaction txn = transformToTransactionObject(transactionInfo);
+
+    var keys = _box.keys.toList().toString();
+    log(keys);
+    log(transactionInfo.id.toString());
+
+    if (_box.containsKey(txn.key)) {
+      final transaction = _box.getAt(txn.key);
+
+      final transactionInfo = transformToTransactionInfo(transaction!);
+
+      return transactionInfo;
+    }
+
+    return null;
   }
 }

@@ -25,13 +25,14 @@ class TransactionImplAdapter extends TypeAdapter<_$TransactionImpl> {
       transactionAmount: fields[5] as double?,
       transactionCategory: fields[6] as String?,
       txnBody: fields[7] as String?,
+      isDismissed: fields[8] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, _$TransactionImpl obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class TransactionImplAdapter extends TypeAdapter<_$TransactionImpl> {
       ..writeByte(6)
       ..write(obj.transactionCategory)
       ..writeByte(7)
-      ..write(obj.txnBody);
+      ..write(obj.txnBody)
+      ..writeByte(8)
+      ..write(obj.isDismissed);
   }
 
   @override

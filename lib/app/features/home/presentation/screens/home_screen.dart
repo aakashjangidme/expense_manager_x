@@ -36,8 +36,9 @@ class HomeScreen extends ConsumerWidget {
       ),
       key: const Key('accounts_mobile'),
       body: RefreshIndicator(
+        key: UniqueKey(),
         onRefresh: () async =>
-            ref.refresh(transactionListFromSMSIsolateProvider.future),
+            await ref.refresh(filteredTransactionsProvider.future),
         child: CustomScrollView(
           shrinkWrap: true,
           slivers: [

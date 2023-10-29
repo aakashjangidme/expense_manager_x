@@ -1,6 +1,9 @@
+import 'package:expense_manager_x/app/features/home/domain/providers/txn_repository_provider.dart';
+import 'package:expense_manager_x/app/features/home/presentation/providers/sms_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
   final Function()? onLeadingTap;
 
@@ -11,7 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(kToolbarHeight),
       child: AppBar(
@@ -22,10 +25,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(title),
         actions: [
           IconButton(
-            onPressed: () {
-              // Implement your search functionality here
+            onPressed: () async {
+              await ref
+                  .read(transactionRepositoryProvider)
+                  .deleteAllTransactions();
+              // await transactionRepository.deleteAllTransactions();
+              return await ref.refresh(transactionListFromSMSIsolateProvider);
             },
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.refresh, fill: 1.0),
           ),
           const SizedBox(width: 8),
           const CircleAvatar(

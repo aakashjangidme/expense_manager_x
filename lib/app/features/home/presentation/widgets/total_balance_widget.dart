@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/configs/constants.dart';
+import '../../../../shared/widgets/animated_text_switcher_for_currency.dart';
 import '../providers/transaction_provider.dart';
-
 
 class TotalBalanceWidget extends ConsumerWidget {
   const TotalBalanceWidget({
@@ -13,6 +13,7 @@ class TotalBalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final totalExpense = ref.watch(totalDebitsProvider);
+    double totalBalance = 100000.00;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Card(
@@ -29,8 +30,8 @@ class TotalBalanceWidget extends ConsumerWidget {
                 children: [
                   const Text('Total Balance'),
                   const SizedBox(height: 8.0),
-                  Text(
-                    '${rupeeSymbol}10000',
+                  AnimatedTextSwitcherForCurrency(
+                    totalBalance - totalExpense,
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
@@ -69,8 +70,8 @@ class TotalBalanceWidget extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          Text(
-                            '+${rupeeSymbol}10000',
+                          AnimatedTextSwitcherForCurrency(
+                            totalBalance,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],
@@ -95,8 +96,8 @@ class TotalBalanceWidget extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          Text(
-                            '-$rupeeSymbol$totalExpense',
+                          AnimatedTextSwitcherForCurrency(
+                            totalExpense,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],

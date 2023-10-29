@@ -28,6 +28,8 @@ mixin _$TransactionInfo {
   double get transactionAmount => throw _privateConstructorUsedError;
   String get transactionCategory => throw _privateConstructorUsedError;
   String get txnBody => throw _privateConstructorUsedError;
+  dynamic get key => throw _privateConstructorUsedError;
+  bool? get isDismissed => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,7 +51,9 @@ abstract class $TransactionInfoCopyWith<$Res> {
       DateTime transactionDate,
       double transactionAmount,
       String transactionCategory,
-      String txnBody});
+      String txnBody,
+      dynamic key,
+      bool? isDismissed});
 }
 
 /// @nodoc
@@ -73,6 +77,8 @@ class _$TransactionInfoCopyWithImpl<$Res, $Val extends TransactionInfo>
     Object? transactionAmount = null,
     Object? transactionCategory = null,
     Object? txnBody = null,
+    Object? key = freezed,
+    Object? isDismissed = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -107,6 +113,14 @@ class _$TransactionInfoCopyWithImpl<$Res, $Val extends TransactionInfo>
           ? _value.txnBody
           : txnBody // ignore: cast_nullable_to_non_nullable
               as String,
+      key: freezed == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      isDismissed: freezed == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -127,7 +141,9 @@ abstract class _$$TransactionInfoImplCopyWith<$Res>
       DateTime transactionDate,
       double transactionAmount,
       String transactionCategory,
-      String txnBody});
+      String txnBody,
+      dynamic key,
+      bool? isDismissed});
 }
 
 /// @nodoc
@@ -149,6 +165,8 @@ class __$$TransactionInfoImplCopyWithImpl<$Res>
     Object? transactionAmount = null,
     Object? transactionCategory = null,
     Object? txnBody = null,
+    Object? key = freezed,
+    Object? isDismissed = freezed,
   }) {
     return _then(_$TransactionInfoImpl(
       id: null == id
@@ -183,6 +201,14 @@ class __$$TransactionInfoImplCopyWithImpl<$Res>
           ? _value.txnBody
           : txnBody // ignore: cast_nullable_to_non_nullable
               as String,
+      key: freezed == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      isDismissed: freezed == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -190,7 +216,7 @@ class __$$TransactionInfoImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$TransactionInfoImpl extends _TransactionInfo {
-  const _$TransactionInfoImpl(
+  _$TransactionInfoImpl(
       {required this.id,
       required this.transactionTitle,
       required this.txnType,
@@ -198,7 +224,9 @@ class _$TransactionInfoImpl extends _TransactionInfo {
       required this.transactionDate,
       required this.transactionAmount,
       required this.transactionCategory,
-      required this.txnBody})
+      required this.txnBody,
+      required this.key,
+      this.isDismissed = false})
       : super._();
 
   factory _$TransactionInfoImpl.fromJson(Map<String, dynamic> json) =>
@@ -220,10 +248,15 @@ class _$TransactionInfoImpl extends _TransactionInfo {
   final String transactionCategory;
   @override
   final String txnBody;
+  @override
+  final dynamic key;
+  @override
+  @JsonKey()
+  final bool? isDismissed;
 
   @override
   String toString() {
-    return 'TransactionInfo(id: $id, transactionTitle: $transactionTitle, txnType: $txnType, transactionSource: $transactionSource, transactionDate: $transactionDate, transactionAmount: $transactionAmount, transactionCategory: $transactionCategory, txnBody: $txnBody)';
+    return 'TransactionInfo(id: $id, transactionTitle: $transactionTitle, txnType: $txnType, transactionSource: $transactionSource, transactionDate: $transactionDate, transactionAmount: $transactionAmount, transactionCategory: $transactionCategory, txnBody: $txnBody, key: $key, isDismissed: $isDismissed)';
   }
 
   @override
@@ -243,7 +276,10 @@ class _$TransactionInfoImpl extends _TransactionInfo {
                 other.transactionAmount == transactionAmount) &&
             (identical(other.transactionCategory, transactionCategory) ||
                 other.transactionCategory == transactionCategory) &&
-            (identical(other.txnBody, txnBody) || other.txnBody == txnBody));
+            (identical(other.txnBody, txnBody) || other.txnBody == txnBody) &&
+            const DeepCollectionEquality().equals(other.key, key) &&
+            (identical(other.isDismissed, isDismissed) ||
+                other.isDismissed == isDismissed));
   }
 
   @JsonKey(ignore: true)
@@ -257,7 +293,9 @@ class _$TransactionInfoImpl extends _TransactionInfo {
       transactionDate,
       transactionAmount,
       transactionCategory,
-      txnBody);
+      txnBody,
+      const DeepCollectionEquality().hash(key),
+      isDismissed);
 
   @JsonKey(ignore: true)
   @override
@@ -275,7 +313,7 @@ class _$TransactionInfoImpl extends _TransactionInfo {
 }
 
 abstract class _TransactionInfo extends TransactionInfo {
-  const factory _TransactionInfo(
+  factory _TransactionInfo(
       {required final int id,
       required final String transactionTitle,
       required final TxnType txnType,
@@ -283,8 +321,10 @@ abstract class _TransactionInfo extends TransactionInfo {
       required final DateTime transactionDate,
       required final double transactionAmount,
       required final String transactionCategory,
-      required final String txnBody}) = _$TransactionInfoImpl;
-  const _TransactionInfo._() : super._();
+      required final String txnBody,
+      required final dynamic key,
+      final bool? isDismissed}) = _$TransactionInfoImpl;
+  _TransactionInfo._() : super._();
 
   factory _TransactionInfo.fromJson(Map<String, dynamic> json) =
       _$TransactionInfoImpl.fromJson;
@@ -305,6 +345,10 @@ abstract class _TransactionInfo extends TransactionInfo {
   String get transactionCategory;
   @override
   String get txnBody;
+  @override
+  dynamic get key;
+  @override
+  bool? get isDismissed;
   @override
   @JsonKey(ignore: true)
   _$$TransactionInfoImplCopyWith<_$TransactionInfoImpl> get copyWith =>
