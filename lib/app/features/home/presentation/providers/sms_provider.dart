@@ -24,6 +24,7 @@ Future<List<SmsMessage>> fetchSMSMessagesInBackground() async {
 }
 
 @riverpod
+//TODO: see why its getting called twice
 Future<List<TransactionInfo>> transactionListFromSMSIsolate(
     TransactionListFromSMSIsolateRef ref) async {
   final transactionRepository = ref.watch(transactionRepositoryProvider);
