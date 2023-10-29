@@ -21,7 +21,7 @@ void main() async {
 
 Future<void> initialiseHive() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(TransactionAdapter());
+  Hive.registerAdapter(TransactionImplAdapter());
   Hive.registerAdapter(TxnTypeAdapter());
   await Hive.openBox<Transaction>('transactions');
 }

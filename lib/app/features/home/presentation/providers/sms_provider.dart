@@ -17,6 +17,7 @@ Future<List<SmsMessage>> fetchSMSMessages(dynamic arg) async {
   return await SmsQuery().querySms(kinds: [SmsQueryKind.Inbox]);
 }
 
+/// Fetches all SMS messages from the device in a background isolate.
 Future<List<SmsMessage>> fetchSMSMessagesInBackground() async {
   log('fetchSMSMessagesInBackground');
   return await flutterCompute(fetchSMSMessages, 1);
@@ -25,27 +26,69 @@ Future<List<SmsMessage>> fetchSMSMessagesInBackground() async {
 @riverpod
 Future<List<TransactionInfo>> transactionListFromSMSIsolate(
     TransactionListFromSMSIsolateRef ref) async {
-  List<TransactionInfo> txnInfoList = [];
+  final transactionRepository = ref.watch(transactionRepositoryProvider);
+  final cachedTransactions = await transactionRepository.getAllTransactions();
+  final smsMessages = await fetchSMSMessages(1);
+
+  final newTransactions = smsMessages
+      .map(extractTransactionalInfo)
+      .where((txn) => !transactionExistsInCache(txn.id, cachedTransactions))
+      .toList();
+
+  // await transactionRepository.deleteAllTransactions();
+
+  await transactionRepository.insertAllTransactions(newTransactions);
+
+  return await transactionRepository.getAllTransactions();
+}
+
+bool transactionExistsInCache(
+    int txnId, List<TransactionInfo> cachedTransactions) {
+  return cachedTransactions.any((txn) => txn.id == txnId);
+}
+
+/*
+@riverpod
+Future<List<TransactionInfo>> transactionListFromSMSIsolate(
+    TransactionListFromSMSIsolateRef ref) async {
+  List<TransactionInfo> finalTxnInfoList = [];
   try {
     log('entering transactionListFromSMSIsolate...');
 
-    final txnRepo = ref.watch(transactionRepositoryProvider);
 
-    // If not, fetch SMS messages on a background isolate
-    final List<SmsMessage> smsList = await fetchSMSMessages(null);
-    log('transactionListFromSMSIsolate::smsList.length ${smsList.length}');
+    final transactionRepository = ref.watch(transactionRepositoryProvider);
+    final cachedTransactions = await transactionRepository.getAllTransactions();
+    final List<SmsMessage> smsMessages  = await _fetchSMSMessages(null);
 
-    txnInfoList = smsList.map(extractTransactionalInfo).toList();
+    log('transactionListFromSMSIsolate::smsMessages .length ${smsMessages .length}');
 
-    log('transactionListFromSMSIsolate::txnInfoList.length ${txnInfoList.length}');
+    final txnInfoListExtractedFromSMS =
+    smsMessages.map(extractTransactionalInfo).toList();
 
-    await txnRepo.insertAllTransactions(txnInfoList);
 
-    log('transactionListFromSMSIsolate::txnList.length ${txnInfoList.length}');
+    final newTransactions = smsMessages
+        .map(extractTransactionalInfo)
+        .where((txn) => !transactionExistsInCache(txn.id, cachedTransactions))
+        .toList();
+
+    log('transactionListFromSMSIsolate::txnInfoListExtractedFromSMS.length ${txnInfoListExtractedFromSMS.length}');
+
+    log('transactionListFromSMSIsolate::txnInfoListFromCache.length ${txnInfoListFromCache.length}');
+
+    for (var txn in txnInfoListExtractedFromSMS) {
+      if (!transactionExistsInCache(txn.id, txnInfoListFromCache)) {
+        await txnRepo.insertTransaction(txn);
+      }
+    }
+
+    final finalTxnInfoList = await txnRepo.getAllTransactions();
+
+    log('transactionListFromSMSIsolate::finalTxnInfoList.length ${finalTxnInfoList.length}');
   } catch (error, stack) {
     log('transactionListFromSMSIsolate::error',
         error: error, stackTrace: stack);
   }
 
-  return txnInfoList;
+  return finalTxnInfoList;
 }
+*/

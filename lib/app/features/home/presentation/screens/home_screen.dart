@@ -6,6 +6,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../providers/transaction_provider.dart';
+import '../widgets/add_txn_overlay.dart';
 import '../widgets/custom_heading.dart';
 import '../widgets/month_selector.dart';
 import '../widgets/total_balance_widget.dart';
@@ -30,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
         key: const Key('accounts_mobile_appbar'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _showAddTransactionOverlay(context),
         child: const Icon(Icons.add),
       ),
       key: const Key('accounts_mobile'),
@@ -99,4 +100,9 @@ class HomeScreen extends ConsumerWidget {
         .read(sMSPermissionStatusProvider.notifier)
         .updatePermissionStatus(status);
   }
+}
+
+void _showAddTransactionOverlay(BuildContext context) async {
+  await showDialog(
+      context: context, builder: (context) => const AddTxnOverlay());
 }

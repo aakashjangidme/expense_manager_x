@@ -7,4 +7,5 @@ abstract class TransactionRepository {
   Future<void> updateTransaction(TransactionInfo updatedTransaction);
   Future<void> insertTransaction(TransactionInfo newTransactionInfo) ;
   Future<void> deleteTransaction(TransactionInfo newTransactionInfo) ;
+  Future<void> deleteAllTransactions() ;
 }

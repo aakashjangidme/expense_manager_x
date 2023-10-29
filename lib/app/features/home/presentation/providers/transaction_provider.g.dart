@@ -6,22 +6,6 @@ part of 'transaction_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$debitTransactionsHash() => r'f8c29ce6adfdd16218ff0ed916511e5ac367f129';
-
-/// See also [debitTransactions].
-@ProviderFor(debitTransactions)
-final debitTransactionsProvider =
-    AutoDisposeProvider<List<TransactionInfo>>.internal(
-  debitTransactions,
-  name: r'debitTransactionsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$debitTransactionsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef DebitTransactionsRef = AutoDisposeProviderRef<List<TransactionInfo>>;
 String _$totalDebitsHash() => r'50038e1f54df19cd318fe1170639a0f3d876a20f';
 
 /// See also [totalDebits].
@@ -68,7 +52,7 @@ final sMSPermissionStatusProvider =
 
 typedef _$SMSPermissionStatus = AutoDisposeNotifier<PermissionStatus>;
 String _$filteredTransactionsHash() =>
-    r'd4c7c11481ece0334349bcc586e0dda8fff70794';
+    r'500956ac1a62b43ee366b4e9ffb4cf87f17549d9';
 
 /// See also [FilteredTransactions].
 @ProviderFor(FilteredTransactions)
@@ -101,5 +85,21 @@ final selectedMonthProvider =
 );
 
 typedef _$SelectedMonth = AutoDisposeNotifier<String>;
+String _$debitTransactionsHash() => r'9431b894b9e377542643468d244f192786662162';
+
+/// See also [DebitTransactions].
+@ProviderFor(DebitTransactions)
+final debitTransactionsProvider = AutoDisposeNotifierProvider<DebitTransactions,
+    List<TransactionInfo>>.internal(
+  DebitTransactions.new,
+  name: r'debitTransactionsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$debitTransactionsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$DebitTransactions = AutoDisposeNotifier<List<TransactionInfo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

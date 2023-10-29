@@ -55,7 +55,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       }
 
       final updatedEntity = mapTransactionModelToEntity(updatedTransaction);
-      await _box.putAt(updatedTransaction.id!, updatedEntity);
+      await _box.putAt(updatedTransaction.id, updatedEntity);
     } catch (e) {
       log('TransactionRepositoryImpl::updateTransaction', error: e);
 
@@ -69,6 +69,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<void> insertTransaction(TransactionInfo newTransactionInfo) async {
     try {
+      log('entered TransactionRepositoryImpl::insertTransaction');
+
+      final existingTxn = _box.get(newTransactionInfo.id);
+
+      log('entered TransactionRepositoryImpl::existingTxn ${existingTxn.toString()}');
+
       final newEntity = mapTransactionModelToEntity(newTransactionInfo);
       await _box.add(newEntity);
     } catch (e) {
@@ -88,7 +94,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
         // Handle cases where the ID is missing
         throw ArgumentError('Transaction must have a valid ID.');
       }
-
       await _box.delete(transactionToDelete.id);
     } catch (e) {
       log('TransactionRepositoryImpl::deleteTransaction', error: e);
@@ -97,5 +102,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
       // Logging the error or returning a default value may be considered
       rethrow; // Rethrow the exception for better error handling further up the call stack
     }
+  }
+
+  @override
+  Future<void> deleteAllTransactions() async {
+    await _box.clear();
   }
 }

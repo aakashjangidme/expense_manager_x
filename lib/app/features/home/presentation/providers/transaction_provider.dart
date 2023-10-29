@@ -7,9 +7,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/configs/constants.dart';
 import '../../domain/models/transaction_info.dart';
+import '../../domain/providers/txn_repository_provider.dart';
 
 part 'transaction_provider.g.dart';
-
+/*
 @riverpod
 List<TransactionInfo> debitTransactions(DebitTransactionsRef ref) {
   final txnList = ref.watch(transactionListFromSMSIsolateProvider);
@@ -23,6 +24,7 @@ List<TransactionInfo> debitTransactions(DebitTransactionsRef ref) {
       .where((element) => element.txnType == TxnType.debit)
       .toList();
 }
+*/
 
 // Provider for handling permission status
 @riverpod
@@ -40,7 +42,6 @@ class SMSPermissionStatus extends _$SMSPermissionStatus {
 class FilteredTransactions extends _$FilteredTransactions {
   @override
   Future<List<TransactionInfo>> build() async {
-    // final smsMessagesProvider = ref.watch(sMSNotifierProvider);
     final selectedMonth = ref.watch(selectedMonthProvider);
     final debitTransactions = ref.watch(debitTransactionsProvider);
 
@@ -57,6 +58,10 @@ class FilteredTransactions extends _$FilteredTransactions {
         return formattedDate == selectedMonth;
       }).toList();
     }
+
+    // Sort the filtered transactions by transactionDate
+    filteredTransactions
+        .sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
 
     return filteredTransactions;
   }
@@ -133,4 +138,33 @@ List<String> uniqueMonths(UniqueMonthsRef ref) {
   }
 
   return [];
+}
+
+@riverpod
+class DebitTransactions extends _$DebitTransactions {
+  @override
+  List<TransactionInfo> build() {
+    final txnList = ref.watch(transactionListFromSMSIsolateProvider);
+
+    log('debitTransactions::txnList.hasValue ${txnList.hasValue}');
+
+    if (!txnList.hasValue) {
+      return [];
+    }
+
+    return txnList.valueOrNull!
+        .where((element) => element.txnType == TxnType.debit)
+        .toList();
+  }
+
+  Future<void> addTransaction(TransactionInfo info) async {
+    final txnRepo = ref.watch(transactionRepositoryProvider);
+
+    await txnRepo.insertTransaction(info);
+
+    final txnList = await txnRepo.getAllTransactions();
+
+    state =
+        txnList.where((element) => element.txnType == TxnType.debit).toList();
+  }
 }
