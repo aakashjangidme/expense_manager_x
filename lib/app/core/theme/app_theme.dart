@@ -32,7 +32,7 @@ ThemeData appTheme(
       textTheme,
     ),
     applyElevationOverlayColor: true,
-    inputDecorationTheme: inputDecorationTheme,
+    inputDecorationTheme: inputDecorationTheme(textTheme),
     elevatedButtonTheme: elevatedButtonTheme(
       context,
       colorScheme,

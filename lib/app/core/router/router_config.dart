@@ -1,4 +1,4 @@
-import 'package:expense_manager_x/app/features/accounts/accounts.dart';
+import 'package:expense_manager_x/app/features/accounts/presentation/screens/add_account_screen.dart';
 import 'package:expense_manager_x/app/features/debts/debts.dart';
 import 'package:expense_manager_x/app/features/home/presentation/screens/home_screen.dart';
 import 'package:expense_manager_x/app/features/overview/overview.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../features/accounts/presentation/screens/accounts_screen.dart';
 import 'routes.dart';
 
 part 'router_config.g.dart';
@@ -43,6 +44,18 @@ final GoRouter _router = GoRouter(
           path: Routes.accounts,
           name: Routes.accounts,
           parentNavigatorKey: _shellNavigator,
+          routes: [
+            GoRoute(
+              path: Routes.addAccount,
+              name: Routes.addAccount,
+              parentNavigatorKey: _shellNavigator,
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(
+                  child: AddAccountScreen(),
+                );
+              },
+            ),
+          ],
           pageBuilder: (context, state) {
             return NoTransitionPage(
               key: state.pageKey,

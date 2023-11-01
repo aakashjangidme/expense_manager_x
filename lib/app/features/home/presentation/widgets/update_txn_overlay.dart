@@ -1,9 +1,9 @@
+import 'package:expense_manager_x/app/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/models/transaction_info.dart';
 import '../providers/transaction_provider.dart';
-
 
 class UpdateTransactionOverlay extends ConsumerStatefulWidget {
   const UpdateTransactionOverlay({super.key, required this.txnId});
@@ -46,10 +46,12 @@ class _UpdateTransactionOverlayState
       title: const Text("Update Transaction"),
       content: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextField(
+            CustomTextField(
               controller: _txnTitleController,
-              decoration: const InputDecoration(labelText: "What was it for?"),
+              label: "what was it for?",
+              hintText: "what was it for?",
             ),
             const SizedBox(height: 16.0),
             const Text("Category"),

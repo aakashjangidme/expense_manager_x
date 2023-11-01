@@ -6,4 +6,5 @@ class Routes {
   static String accounts = "/accounts";
   static String debts = "/debts";
   static String overview = "/overview";
+  static String addAccount = "addAccount";
 }

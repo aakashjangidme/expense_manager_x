@@ -23,12 +23,16 @@ ElevatedButtonThemeData elevatedButtonTheme(
   );
 }
 
-InputDecorationTheme get inputDecorationTheme {
+InputDecorationTheme inputDecorationTheme(
+  TextTheme? textTheme,
+) {
   return InputDecorationTheme(
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.0),
-    ),
-    filled: true,
+    border: InputBorder.none,
+    filled: false,
+    alignLabelWithHint: true,
+    labelStyle: textTheme?.headlineSmall,
+    floatingLabelStyle: textTheme?.bodyMedium,
+    floatingLabelBehavior: FloatingLabelBehavior.auto,
   );
 }
 

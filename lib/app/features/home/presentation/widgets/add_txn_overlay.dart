@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:expense_manager_x/app/core/configs/constants.dart';
+import 'package:expense_manager_x/app/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -119,9 +120,10 @@ class _AddTxnOverlayState extends ConsumerState<AddTxnOverlay> {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         final state = ref.watch(field.providerName!);
-        return TextFormField(
+        return CustomTextFormField(
           initialValue: state,
-          decoration: InputDecoration(labelText: field.label),
+          label: field.label,
+          hintText: field.label,
           validator: field.validator,
           onSaved: (value) {
             ref.read(field.providerName!.notifier).state = value!;
@@ -149,14 +151,13 @@ class _AddTxnOverlayState extends ConsumerState<AddTxnOverlay> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const SizedBox(height: 16.0),
               for (var field in fieldDescriptions) ...[
                 _buildTextFormField(field),
                 const SizedBox(height: 16.0),
               ],
               const SizedBox(height: 16.0),
               Text(
-                "Transaction Type",
+                "transaction Type",
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: 16.0),
@@ -166,7 +167,7 @@ class _AddTxnOverlayState extends ConsumerState<AddTxnOverlay> {
               ),
               const SizedBox(height: 16.0),
               Text(
-                "Category",
+                "category",
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: 16.0),
@@ -182,13 +183,13 @@ class _AddTxnOverlayState extends ConsumerState<AddTxnOverlay> {
       actions: <Widget>[
         ElevatedButton(
           onPressed: _saveTransaction,
-          child: const Text("Save"),
+          child: const Text("save"),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text("Cancel"),
+          child: const Text("cancel"),
         ),
       ],
     );

@@ -13,13 +13,16 @@ class WelcomeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hi, Aakash',
-            style: Theme.of(context).textTheme.bodyMedium,
+            'hi, aakash.',
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 8.0),
           Text(
             'Welcome back!',
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.45),
+                ),
           ),
         ],
       ),

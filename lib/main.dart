@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app/expense_manager_app.dart';
+import 'app/features/accounts/data/datasources/local/hive/account_object.dart';
 import 'app/features/home/data/datasources/local/hive/transaction.dart';
 import 'app/features/home/data/datasources/local/hive/txn_type_adapter.dart';
 
@@ -22,6 +23,8 @@ void main() async {
 Future<void> initialiseHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TransactionImplAdapter());
+  Hive.registerAdapter(AccountObjectImplAdapter());
   Hive.registerAdapter(TxnTypeAdapter());
   await Hive.openBox<Transaction>('transactions');
+  await Hive.openBox<AccountObject>('accounts');
 }

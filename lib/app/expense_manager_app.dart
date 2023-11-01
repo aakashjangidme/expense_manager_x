@@ -51,7 +51,7 @@ class ExpenseManagerApp extends ConsumerWidget {
           routerConfig: ref.read(goRouterProvider),
           title: 'Expense Manager',
           themeMode: ThemeMode.dark,
-          debugShowCheckedModeBanner: kDebugMode,
+          debugShowCheckedModeBanner: false,
           theme: appTheme(
             context,
             lightColorScheme,
