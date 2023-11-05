@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:expense_manager_x/app/features/accounts/presentation/providers/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/widgets/animated_text_switcher_for_currency.dart';
 import '../../../../shared/widgets/display_error_message.dart';
 import '../../domain/models/account.dart';
+import '../providers/account_screen_provider.dart';
 
 class AccountCard extends ConsumerWidget {
   const AccountCard({

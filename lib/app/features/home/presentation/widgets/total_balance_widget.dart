@@ -13,7 +13,7 @@ class TotalBalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final totalExpense = ref.watch(totalDebitsProvider);
-    double totalBalance = 100000.00;
+    final totalBalance = ref.watch(aggregateBalanceProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Card(
@@ -27,12 +27,24 @@ class TotalBalanceWidget extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Total Balance'),
+                  Text(
+                    'here is a summary of your monthly expense.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 8.0),
+                  const Text(
+                    'Aggregate Balance',
+                    // style: Theme.of(context).textTheme.bodySmall,
+                  ),
                   const SizedBox(height: 8.0),
                   AnimatedTextSwitcherForCurrency(
-                    totalBalance - totalExpense,
-                    style: Theme.of(context).textTheme.displaySmall,
+                    totalBalance,
+                    style:
+                        Theme.of(context).textTheme.displaySmall!.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ),
                   ),
                 ],
               ),
@@ -63,16 +75,20 @@ class TotalBalanceWidget extends ConsumerWidget {
                                   Icons.arrow_drop_down_outlined,
                                   color: Colors.green,
                                 ),
-                                Text(
-                                  'Income',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
+                                Text('Income',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
                               ],
                             ),
                           ),
                           AnimatedTextSwitcherForCurrency(
                             totalBalance,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                           ),
                         ],
                       ),

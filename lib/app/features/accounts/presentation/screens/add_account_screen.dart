@@ -10,7 +10,7 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/scrollable_column.dart';
 import '../providers/add_account_provider.dart';
 import '../widgets/add_account_type_dropdown.dart';
-import '../widgets/full_width_buttons.dart';
+import '../../../../shared/widgets/full_width_buttons.dart';
 
 //TODO: remove that errorMessage soon you start editing the field, after getting a validation error!
 final GlobalKey<FormState> _addAccountFormKey = GlobalKey<FormState>();
@@ -20,7 +20,6 @@ class AddAccountScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stateNotifier = ref.read(addAccountsScreenStateProvider.notifier);
     final theme = Theme.of(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -33,30 +32,7 @@ class AddAccountScreen extends ConsumerWidget {
         children: [
           const AddAccountForm(),
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: FullWidthElevatedTextButton(
-              'save',
-              onPressed: () async {
-                if (_addAccountFormKey.currentState!.validate()) {
-                  _addAccountFormKey.currentState!.save();
-
-                  await stateNotifier.saveAccount();
-
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('account saved successfully.'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                    _addAccountFormKey.currentState!.reset();
-                    // Navigator.of(context).pop(true);
-                  }
-                }
-              },
-            ),
-          ),
+          const SaveButton(),
           const MarginY(16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -160,6 +136,42 @@ class AddAccountForm extends ConsumerWidget {
           ),
           const MarginY(16),
         ],
+      ),
+    );
+  }
+}
+
+class SaveButton extends ConsumerWidget {
+  const SaveButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stateNotifier = ref.read(addAccountsScreenStateProvider.notifier);
+    final isLoading = ref.watch(
+        addAccountsScreenStateProvider.select((value) => value.isLoading));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: FullWidthElevatedTextButton(
+        'save',
+        loading: isLoading,
+        onPressed: () async {
+          if (_addAccountFormKey.currentState!.validate()) {
+            _addAccountFormKey.currentState!.save();
+
+            await stateNotifier.saveAccount();
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('account saved successfully.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              _addAccountFormKey.currentState!.reset();
+            }
+          }
+        },
       ),
     );
   }

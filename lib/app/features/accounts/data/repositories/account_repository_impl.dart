@@ -67,7 +67,7 @@ class AccountRepositoryImpl implements AccountRepository {
         await _box.add(newAccount);
       } else {
         final message =
-            "AccountRepositoryImpl::insertAccount - The key ${account.key} already exists.";
+            "AccountRepositoryImpl::insertAccount - The id ${account.id} already exists.";
         throw AsyncValue.error(message, StackTrace.current);
       }
     } catch (e, s) {

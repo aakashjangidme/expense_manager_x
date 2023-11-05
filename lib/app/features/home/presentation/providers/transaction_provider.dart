@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:ffi';
 
+import 'package:expense_manager_x/app/features/accounts/presentation/providers/account_screen_provider.dart';
 import 'package:expense_manager_x/app/features/home/presentation/providers/sms_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -54,14 +56,14 @@ class FilteredTransactions extends _$FilteredTransactions {
       filteredTransactions = debitTransactions.where((transaction) {
         final transactionDate = transaction.transactionDate;
         final formattedDate =
-            DateFormat(defaultMonthFormat, 'en_US').format(transactionDate);
+            DateFormat(defaultMonthFormat, 'en_US').format(transactionDate!);
         return (formattedDate == selectedMonth);
       }).toList();
     }
 
     // Sort the filtered transactions by transactionDate
     filteredTransactions
-        .sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
+        .sort((a, b) => b.transactionDate!.compareTo(a.transactionDate!));
 
     filteredTransactions = filteredTransactions
         .where((element) => element.isDismissed == false)
@@ -111,14 +113,31 @@ double totalDebits(TotalDebitsRef ref) {
     return filteredTransactions.valueOrNull
             ?.where((transaction) => transaction.txnType == TxnType.debit)
             .map((transaction) => transaction.transactionAmount)
-            .fold(0.0, (total, amount) => total! + amount) ??
+            .fold(0.0, (total, amount) => total! + amount!) ??
         0.0;
   }
 
   return filteredTransactions.valueOrNull!
       .where((transaction) => transaction.txnType == TxnType.debit)
       .map((transaction) => transaction.transactionAmount)
-      .fold(0.0, (total, amount) => total + amount);
+      .fold(0.0, (total, amount) => total + amount!);
+}
+
+@riverpod
+double aggregateBalance(AggregateBalanceRef ref) {
+  final accountList = ref.watch(accountListProvider);
+
+  if (!accountList.hasValue) {
+    return 0;
+  }
+
+  double totalBalance = 0.0;
+
+  for (final account in accountList.requireValue) {
+    totalBalance += account.accountBalance ?? 0.0;
+  }
+
+  return totalBalance;
 }
 
 // Provider for unique months
@@ -126,18 +145,29 @@ double totalDebits(TotalDebitsRef ref) {
 List<String> uniqueMonths(UniqueMonthsRef ref) {
   final txnList = ref.watch(transactionListFromSMSIsolateProvider);
 
-  if (txnList.hasValue) {
+  if (txnList.hasValue && txnList.value!.isNotEmpty) {
     final uniqueMonthsSet = <String>{};
+    final minDate = txnList.value!
+        .map((txn) => txn.transactionDate)
+        .where((date) => date != null)
+        .reduce((minDate, date) => minDate!.isBefore(date!) ? minDate : date);
 
-    for (final txn in txnList.value!) {
-      final transactionDate = txn.transactionDate;
-      final monthYearString =
-          DateFormat(defaultMonthFormat, 'en_US').format(transactionDate);
+    final currentDate = DateTime.now();
+    final dateFormatter = DateFormat(defaultMonthFormat, 'en_US');
+    final minMonth = dateFormatter.format(minDate!);
+    final currentMonth = dateFormatter.format(currentDate);
 
-      uniqueMonthsSet.add(monthYearString);
+    for (DateTime date = currentDate;
+        date.isAfter(minDate!) || dateFormatter.format(date) == minMonth;
+        date = DateTime(date.year, date.month - 1)) {
+      uniqueMonthsSet.add(dateFormatter.format(date));
     }
 
-    return uniqueMonthsSet.toList();
+    final uniqueMonthsList = uniqueMonthsSet.toList();
+    uniqueMonthsList.sort(
+        (a, b) => dateFormatter.parse(b).compareTo(dateFormatter.parse(a)));
+
+    return uniqueMonthsList;
   }
 
   return [];

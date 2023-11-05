@@ -77,15 +77,15 @@ class _AddTxnOverlayState extends ConsumerState<AddTxnOverlay> {
       final String transactionSource = ref.watch(sourceProvider) ?? "";
 
       //TODO: implement auto increment
-      int maxId = ref.watch(debitTransactionsProvider).isNotEmpty
+      int? maxId = ref.watch(debitTransactionsProvider).isNotEmpty
           ? ref
               .watch(debitTransactionsProvider)
               .map((entity) => entity.id)
-              .reduce((a, b) => a > b ? a : b)
+              .reduce((a, b) => a! > b! ? a : b)
           : 0;
 
       TransactionInfo newTxn = TransactionInfo(
-        id: maxId + 1,
+        id: maxId! + 1,
         // Replace with the appropriate ID
         transactionTitle: txnTitle.trim().isEmpty ? "Unknown" : txnTitle.trim(),
         txnType: ref.read(typeProvider),

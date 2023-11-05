@@ -1,47 +1,22 @@
 import 'dart:developer';
 
+
+import 'package:expense_manager_x/app/shared/extentions/extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/models/account.dart';
 import '../../domain/providers/account_repository_provider.dart';
+import 'state/add_account_screen_state.dart';
 
 part 'add_account_provider.g.dart';
 
-class AddAccountsScreenStateObject {
-  String? accountNumber;
-  String? accountName;
-  String? accountType;
-  double? accountBalance;
 
-  AddAccountsScreenStateObject({
-    this.accountNumber,
-    this.accountName,
-    this.accountType,
-    this.accountBalance,
-  });
-
-  AddAccountsScreenStateObject copyWith({
-    String? accountNumber,
-    String? accountName,
-    String? accountType,
-    double? accountBalance,
-  }) {
-    return AddAccountsScreenStateObject(
-      accountNumber: accountNumber ?? this.accountNumber,
-      accountName: accountName ?? this.accountName,
-      accountType: accountType ?? this.accountType,
-      accountBalance: accountBalance ?? this.accountBalance,
-    );
-  }
-}
 
 // //add account screen state
 @riverpod
 class AddAccountsScreenState extends _$AddAccountsScreenState {
-  final stateObject = AddAccountsScreenStateObject();
-
   @override
-  AddAccountsScreenStateObject build() => stateObject;
+  AddAccountsScreenStateObject build() => AddAccountsScreenStateObject();
 
   void setAccountType(String? accountType) {
     state = state.copyWith(accountType: accountType);
@@ -57,12 +32,21 @@ class AddAccountsScreenState extends _$AddAccountsScreenState {
 
   void setAccountBalance(String? accountBalance) {
     state = state.copyWith(
-      accountBalance:
-          accountBalance != null ? double.tryParse(accountBalance) : null,
+      accountBalance: accountBalance?.toDouble(),
     );
   }
 
+  void setLoading(bool loading) {
+    state = state.copyWith(isLoading: loading);
+  }
+
+  void setErrorMessage(String? errorMessage) {
+    state = state.copyWith(error: errorMessage);
+  }
+
   Future<void> saveAccount() async {
+    setLoading(true);
+
     final accountRepository = ref.watch(accountRepositoryProvider);
 
     final allAccounts = await accountRepository.getAllAccounts();
@@ -82,6 +66,12 @@ class AddAccountsScreenState extends _$AddAccountsScreenState {
 
     await accountRepository.insertAccount(account);
 
+    await Future.delayed(const Duration(seconds: 3));
+
     log("account saved : ${account.toString()}");
+
+    setLoading(false);
+
+    state = AddAccountsScreenStateObject();
   }
 }

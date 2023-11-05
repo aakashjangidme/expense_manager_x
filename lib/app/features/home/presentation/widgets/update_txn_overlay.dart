@@ -30,8 +30,8 @@ class _UpdateTransactionOverlayState
         .value!
         .firstWhere((element) => element.id == widget.txnId);
 
-    _txnTitleController.text = txnInfo.transactionTitle;
-    _selectedTxnCategory = txnInfo.transactionCategory;
+    _txnTitleController.text = txnInfo.transactionTitle ?? "";
+    _selectedTxnCategory = txnInfo.transactionCategory ?? "";
   }
 
   @override

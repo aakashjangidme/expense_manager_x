@@ -1,9 +1,11 @@
 import 'package:expense_manager_x/app/features/home/presentation/providers/sms_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../providers/transaction_provider.dart';
 import '../widgets/add_txn_overlay.dart';
@@ -28,10 +30,10 @@ class HomeScreen extends ConsumerWidget {
       appBar: CustomAppBar(
         title: 'Home',
         onLeadingTap: () {},
-        key: const Key('accounts_mobile_appbar'),
+        key: const Key('home_mobile_appbar'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTransactionOverlay(context),
+        onPressed: () => context.push("${Routes.home}/${Routes.addExpense}"),
         child: const Icon(Icons.add),
       ),
       key: const Key('accounts_mobile'),

@@ -28,9 +28,6 @@ class TransactionListBuilder extends ConsumerWidget {
           TransactionInfo txnInfo = item[index];
           bool isDebit = txnInfo.txnType == TxnType.debit;
 
-          print(txnInfo.transactionSource.trim().isNotEmpty);
-          print(txnInfo.transactionSource.length);
-
           return Dismissible(
             background: Container(color: Colors.redAccent),
             key: ValueKey(txnInfo.key),
@@ -51,7 +48,7 @@ class TransactionListBuilder extends ConsumerWidget {
               iconColor: Colors.greenAccent,
               onTap: () => _showUpdateTransactionOverlay(context, txnInfo, ref),
               onLongPress: () {
-                log(txnInfo.txnBody);
+                log(txnInfo.txnBody.toString());
               },
               leading: const Icon(
                 Icons.shopping_bag_outlined,
@@ -61,8 +58,9 @@ class TransactionListBuilder extends ConsumerWidget {
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (txnInfo.transactionSource.trim().isNotEmpty) ...[
-                    Text(txnInfo.transactionSource,
+                  if (txnInfo.transactionSource != null &&
+                      txnInfo.transactionSource!.trim().isNotEmpty) ...[
+                    Text(txnInfo.transactionSource.toString(),
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(width: 8.0),
                   ],
@@ -70,12 +68,12 @@ class TransactionListBuilder extends ConsumerWidget {
                 ],
               ),
               title: Row(
-                children: [Text(txnInfo.transactionTitle)],
+                children: [Text(txnInfo.transactionTitle.toString())],
               ),
               trailing: Text(
                 ('\u{20B9}') +
                     (isDebit ? ' -' : ' +') +
-                    (txnInfo.transactionAmount.toStringAsFixed(2)),
+                    (txnInfo.transactionAmount.toString()),
                 style: TextStyle(color: isDebit ? Colors.red : Colors.green),
               ),
             ),
@@ -160,7 +158,7 @@ void _showUpdateTransactionOverlay(
   await showDialog(
     context: context,
     builder: (context) => UpdateTransactionOverlay(
-      txnId: txnInfo.id,
+      txnId: txnInfo.id!,
     ),
   );
 }

@@ -37,17 +37,21 @@ bool isDebitTransaction(String sms) {
   return false;
 }
 
-String getWeekday(DateTime date) {
+String getWeekday(DateTime? date) {
   List<String> weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return weekdays[date.weekday - 1];
+  if (date != null) return weekdays[date.weekday - 1];
+  return "";
 }
 
-String formatTimeWithAMPM(DateTime time) {
-  String hour =
-      time.hour > 12 ? (time.hour - 12).toString() : time.hour.toString();
-  String minute = time.minute.toString().padLeft(2, '0');
-  String amPm = time.hour >= 12 ? 'PM' : 'AM';
-  return '$hour:$minute $amPm';
+String formatTimeWithAMPM(DateTime? time) {
+  if (time != null) {
+    String hour =
+        time.hour > 12 ? (time.hour - 12).toString() : time.hour.toString();
+    String minute = time.minute.toString().padLeft(2, '0');
+    String amPm = time.hour >= 12 ? 'PM' : 'AM';
+    return '$hour:$minute $amPm';
+  }
+  return "";
 }
 
 double extractAmount(String smsBody) {
@@ -82,4 +86,3 @@ double extractAmount(String smsBody) {
 List<SmsMessage> filterDebitTransactions(List<SmsMessage> smsMessages) {
   return smsMessages.where((sms) => isDebitTransaction(sms.body!)).toList();
 }
-

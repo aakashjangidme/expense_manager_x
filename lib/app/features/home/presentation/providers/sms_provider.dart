@@ -33,7 +33,7 @@ Future<List<TransactionInfo>> transactionListFromSMSIsolate(
 
   final newTransactions = smsMessages
       .map(extractTransactionalInfo)
-      .where((txn) => !transactionExistsInCache(txn.id, cachedTransactions))
+      .where((txn) => !transactionExistsInCache(txn.id!, cachedTransactions))
       .toList();
 
   // await transactionRepository.deleteAllTransactions();

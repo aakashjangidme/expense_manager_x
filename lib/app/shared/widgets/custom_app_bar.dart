@@ -1,3 +1,4 @@
+import 'package:expense_manager_x/app/features/accounts/domain/providers/account_repository_provider.dart';
 import 'package:expense_manager_x/app/features/home/domain/providers/txn_repository_provider.dart';
 import 'package:expense_manager_x/app/features/home/presentation/providers/sms_provider.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
               await ref
                   .read(transactionRepositoryProvider)
                   .deleteAllTransactions();
+              await ref.read(accountRepositoryProvider).deleteAllAccounts();
               // await transactionRepository.deleteAllTransactions();
               return await ref.refresh(transactionListFromSMSIsolateProvider);
             },

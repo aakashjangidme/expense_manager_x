@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../shared/widgets/custom_form_dropdown.dart';
 import '../providers/add_account_provider.dart';
 
 List<String> accountTypes = [
@@ -19,9 +20,8 @@ class AccountTypeDropDown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(addAccountsScreenStateProvider);
     final stateNotifier = ref.read(addAccountsScreenStateProvider.notifier);
-    final theme = Theme.of(context);
 
-    return DropdownButtonFormField(
+    return CustomFormDropdown<String>(
       validator: (String? value) {
         if (value == null) {
           return "please enter a valid account type.";
@@ -29,27 +29,11 @@ class AccountTypeDropDown extends ConsumerWidget {
           return null;
         }
       },
-      value: state.accountType,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        color: theme.colorScheme.onSurface.withOpacity(1),
-      ),
-      elevation: 2,
-      hint: Text(
-        'account type',
-        style: theme.textTheme.headlineSmall?.copyWith(
-          color: theme.colorScheme.onSurface.withOpacity(1),
-        ),
-      ),
-      // underline: const SizedBox(),
-      icon: const Icon(Icons.keyboard_arrow_down),
-      items: accountTypes.map((String item) {
-        return DropdownMenuItem(
-          value: item,
-          child: Text(item),
-        );
-      }).toList(),
+      selectedValue: state.accountType,
+      hintText: 'account type',
       onChanged: (String? accountType) =>
           stateNotifier.setAccountType(accountType),
+      items: accountTypes,
     );
   }
 }

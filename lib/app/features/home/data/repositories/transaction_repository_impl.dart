@@ -77,9 +77,10 @@ class TransactionRepositoryImpl implements TransactionRepository {
       if (!existingTransaction) {
         final newTransaction = transformToTransactionObject(transactionInfo);
         await _box.add(newTransaction);
+        log('TransactionRepositoryImpl::insertTransaction - transaction saved to Box');
       } else {
         final message =
-            "TransactionRepositoryImpl::insertTransaction - The key ${transactionInfo.key} already exists.";
+            "TransactionRepositoryImpl::insertTransaction - The id ${transactionInfo.id} already exists.";
         throw AsyncValue.error(message, StackTrace.current);
       }
     } catch (e, s) {

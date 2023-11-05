@@ -1,5 +1,6 @@
 import 'package:expense_manager_x/app/features/accounts/presentation/screens/add_account_screen.dart';
 import 'package:expense_manager_x/app/features/debts/debts.dart';
+import 'package:expense_manager_x/app/features/home/presentation/screens/add_expense_screen.dart';
 import 'package:expense_manager_x/app/features/home/presentation/screens/home_screen.dart';
 import 'package:expense_manager_x/app/features/overview/overview.dart';
 import 'package:expense_manager_x/app/shared/widgets/scaffold_with_navbar.dart';
@@ -30,16 +31,27 @@ final GoRouter _router = GoRouter(
           ScaffoldWithNavbar(key: state.pageKey, child: child),
       routes: [
         GoRoute(
-          path: Routes.home,
-          name: Routes.home,
-          parentNavigatorKey: _shellNavigator,
-          pageBuilder: (context, state) {
-            return NoTransitionPage(
-              key: state.pageKey,
-              child: const HomeScreen(),
-            );
-          },
-        ),
+            path: Routes.home,
+            name: Routes.home,
+            parentNavigatorKey: _shellNavigator,
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                key: state.pageKey,
+                child: const HomeScreen(),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: Routes.addExpense,
+                name: Routes.addExpense,
+                parentNavigatorKey: _shellNavigator,
+                pageBuilder: (context, state) {
+                  return const NoTransitionPage(
+                    child: AddExpenseScreen(),
+                  );
+                },
+              ),
+            ]),
         GoRoute(
           path: Routes.accounts,
           name: Routes.accounts,
